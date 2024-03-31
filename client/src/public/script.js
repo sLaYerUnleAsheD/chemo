@@ -84,6 +84,10 @@ server.onmessage = function (event) {
         return $(".you .my-cards").append(
           `<div class="my-card num-plus4 black" data-ability="plus4" data-color data-number><span class="inner"><span class="mark">+4</span></span></div>`
         );
+      if (card.ability === "gmatch")
+        return $(".you .my-cards").append(
+          `<div class="my-card num-gmatch black" data-ability="gmatch" data-color data-number><span class="inner"><span class="mark">GrM</span></span></div>`
+        );
       if (card.ability === "plus2")
         return $(".you .my-cards").append(
           `<div class="my-card num-plus2 ${card.color}" data-ability="plus2" data-color="${card.color}" data-number><span class="inner"><span class="mark">+2</span></span></div>`
@@ -187,6 +191,10 @@ server.onmessage = function (event) {
       if (data.room.centerCard.ability === "plus4")
         $(".center .center-card").html(
           `<div class="my-card num-plus4 ${data.room.centerColor}" data-ability="plus4" data-color data-number><span class="inner"><span class="mark">+4</span></span></div>`
+        );
+      if (data.room.centerCard.ability === "gmatch")
+        $(".center .center-card").html(
+          `<div class="my-card num-gmatch ${data.room.centerColor}" data-ability="gmatch" data-color data-number><span class="inner"><span class="mark">GrM</span></span></div>`
         );
       if (data.room.centerCard.ability === "plus2")
         $(".center .center-card").html(
@@ -319,6 +327,10 @@ server.onmessage = function (event) {
       $(".center .center-card").html(
         `<div class="my-card num-plus4 ${data.centerColor}" data-ability="plus4" data-color data-number><span class="inner"><span class="mark">+4</span></span></div>`
       );
+    if (data.room.centerCard.ability === "gmatch")
+      $(".center .center-card").html(
+        `<div class="my-card num-gmatch ${data.room.centerColor}" data-ability="gmatch" data-color data-number><span class="inner"><span class="mark">GrM</span></span></div>`
+      );
     if (data.centerCard.ability === "plus2")
       $(".center .center-card").html(
         `<div class="my-card num-plus2 ${data.centerCard.color}" data-ability="plus2" data-color="${data.centerCard.color}" data-number><span class="inner"><span class="mark">+2</span></span></div>`
@@ -369,6 +381,10 @@ server.onmessage = function (event) {
         if (card.ability === "plus4")
           return $(`.player.num-${data.players.length}-${j} .my-cards`).append(
             `<div class="my-card num-plus4 black" data-ability="plus4" data-color data-number><span class="inner"><span class="mark">+4</span></span></div>`
+          );
+        if (card.ability === "gmatch")
+          return $(`.player.num-${data.players.length}-${j} .my-cards`).append(
+            `<div class="my-card num-gmatch black" data-ability="gmatch" data-color data-number><span class="inner"><span class="mark">GrM</span></span></div>`
           );
         if (card.ability === "plus2")
           return $(`.player.num-${data.players.length}-${j} .my-cards`).append(

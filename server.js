@@ -44,6 +44,7 @@ class Server {
     } while (this.rooms.has(room.roomID));
     room.players = [];
     room.centerCard = {};
+    // room.lastNumCard = null;
     room.centerCards = [];
     room.centerPlus = 0;
     room.ownerID = socket.id;
@@ -288,6 +289,7 @@ class Server {
     do {
       room.centerCardIndex = ~~(Math.random() * room.cards.length) - 1;
       room.centerCard = room.cards[room.centerCardIndex];
+      // lastNumCard = room.centerCard;
     } while (!room.centerCard || room.centerCard.ability);
 
     room.centerColor = room.centerCard.color;
@@ -331,6 +333,7 @@ class Server {
         : parseInt(data.card.number);
     switch (data.action) {
       case "place": {
+        console.log();
         if (
           !data.card ||
           !player.cards.filter(
@@ -341,6 +344,27 @@ class Server {
           ).length
         )
           return; // check if player has card
+
+        if (data.card.ability === "gmatch") {
+          // Check if the next player has a card with the same group as the last numbered card
+          var index =
+            room.players.findIndex((player) => player.id === socket.id) + 1;
+          room.centerCard = data.card;
+          const lastNumberedCard = room.centerCards.find(
+            (card) => card.number !== null
+          );
+          const groupMatchCards = room.players[index].cards.filter(
+            (card) => card.group === lastNumberedCard.group
+          );
+          if (groupMatchCards.length > 0) {
+            this.nextTurn(room, player, data, socket, "gmatch");
+          } else {
+            // No card from the same group, pick 3 cards
+            room.centerPlus = room.centerPlus + 3;
+            this.nextTurn(room, player, data, socket, "take");
+          }
+        }
+
         if (
           (!data.card.color &&
             data.card.ability &&
@@ -406,11 +430,8 @@ class Server {
                 this.nextTurn(room, player, data, socket, "block"); // skip
                 break;
               }
-              //   case "gmatch": {
-              //     this.nextTurn(room, player, data, socket, "gmatch"); // group match action move
-              //     break;
-              //   }
               default: {
+                // room.lastNumCard = data.card; //update last num card when its not ability card.
                 this.nextTurn(room, player, data, socket);
                 break;
               }
@@ -495,7 +516,7 @@ class Server {
     } else {
       var index =
         room.players.findIndex((player) => player.id === socket.id) + 1;
-      if (turn !== "take") {
+      if (turn !== "take" && turn !== "gmatch") {
         const cardIndex = player.cards.findIndex(
           (card) =>
             card.color === data.card.color &&
@@ -507,6 +528,17 @@ class Server {
         if (room.players.filter((player) => !player.cards.length).length)
           return this.end(room.roomID);
       }
+
+      if (turn === "gmatch") {
+        const cardIndex = player.cards.findIndex(
+          (card) => card.group === data.card.group
+        );
+        room.centerCards.push(room.players[index - 1].cards[cardIndex]);
+        room.players[index - 1].cards.splice(cardIndex, 1);
+        if (room.players.filter((player) => !player.cards.length).length)
+          return this.end(room.roomID);
+      }
+
       if (room.players.length <= index) index = 0;
       if (turn === "block" || (turn === "reverse" && room.players.length === 2))
         index++;
@@ -686,10 +718,11 @@ class Server {
       //         ability: null,
       //       });
       //     });
-      //   }
-
+      // }
       for (let i = 0; i < 14; i++) {
         cards.push({
+          group: sBlock[i].group,
+          period: sBlock[i].period,
           symbol: sBlock[i].symbol,
           number: sBlock[i].atomicNumber,
           color: colors[0],
@@ -698,6 +731,8 @@ class Server {
       }
       for (let i = 0; i < 14; i++) {
         cards.push({
+          group: pBlock[i].group,
+          period: pBlock[i].period,
           symbol: pBlock[i].symbol,
           number: pBlock[i].atomicNumber,
           color: colors[1],
@@ -706,6 +741,8 @@ class Server {
       }
       for (let i = 0; i < 14; i++) {
         cards.push({
+          group: dBlock[i].group,
+          period: dBlock[i].period,
           symbol: dBlock[i].symbol,
           number: dBlock[i].atomicNumber,
           color: colors[2],
@@ -714,6 +751,8 @@ class Server {
       }
       for (let i = 0; i < 14; i++) {
         cards.push({
+          group: fBlock[i].group,
+          period: fBlock[i].period,
           symbol: fBlock[i].symbol,
           number: fBlock[i].atomicNumber,
           color: colors[3],
@@ -723,6 +762,8 @@ class Server {
       colors.forEach((color) => {
         abilities.forEach((ability) => {
           cards.push({
+            group: null,
+            period: null,
             symbol: null,
             number: null,
             color: color,
@@ -733,16 +774,28 @@ class Server {
     }
     for (let i = 0; i < 4; i++) {
       cards.push({
+        group: null,
+        period: null,
         symbol: null,
         number: null,
         color: null,
         ability: "plus4",
       });
       cards.push({
+        group: null,
+        period: null,
         symbol: null,
         number: null,
         color: null,
         ability: "change",
+      });
+      cards.push({
+        group: null,
+        period: null,
+        symbol: null,
+        number: null,
+        color: null,
+        ability: "gmatch",
       });
     }
     return this.shuffle(cards);
@@ -885,7 +938,7 @@ class Server {
       socket.on("message", (message) => {
         try {
           const data = JSON.parse(message);
-          console.log(data);
+          console.log(data); /////////////////////////////////////////////////////////////////////////////LMAO////////////////////////////////////////
           switch (data.type) {
             case "room_list": {
               this.roomList(socket);

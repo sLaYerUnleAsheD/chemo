@@ -1673,37 +1673,4 @@ button {
 .my-card.num-block:before,
 .my-card.num-block:after {
   content: "🚫";
-}
-
-.my-card.num-6 .mark:after,
-.my-card.num-9 .mark:after {
-  display: block;
-  content: "";
-  position: relative;
-  top: -25px;
-  left: 5px;
-  width: 80%;
-  border: 1px solid #000000;
-  height: 4px;
-  box-shadow: 1px 1px 0 #000000;
-}
-
-.my-card.num-6.blue .mark:after,
-.my-card.num-9.blue .mark:after {
-  background: var(--card-blue);
-}
-
-.my-card.num-6.green .mark:after,
-.my-card.num-9.green .mark:after {
-  background: var(--card-green);
-}
-
-.my-card.num-6.red .mark:after,
-.my-card.num-9.red .mark:after {
-  background: var(--card-red);
-}
-
-.my-card.num-6.yellow .mark:after,
-.my-card.num-9.yellow .mark:after {
-  background: var(--card-yellow);
 }/*# sourceMappingURL=style.css.map */
