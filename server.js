@@ -345,10 +345,13 @@ class Server {
           return; // check if player has card
 
         if (player.turn === "gmatch") {
-          console.log("hi im here to see if turn is gmatch");
-          const lastNumberedCard = room.centerCards.find(
-            (card) => card.number !== null
-          );
+          var lastNumberedCard;
+          for (let i = room.centerCards.length - 1; i > -1; i--) {
+            if (room.centerCards[i].number !== null) {
+              lastNumberedCard = room.centerCards[i];
+              break;
+            }
+          }
           var index =
             room.players.findIndex((player) => player.id === socket.id) + 1;
           if (room.players.length <= index) index = 0;
@@ -360,9 +363,16 @@ class Server {
           ) {
             return;
           } else if (data.card && data.card.group === lastNumberedCard.group) {
+            const cardIndex = player.cards.findIndex(
+              (card) =>
+                card.color === data.card.color &&
+                card.ability === data.card.ability &&
+                card.number === data.card.number &&
+                card.group === data.card.group
+            );
             room.centerCard = data.card;
-            room.centerCards.push(room.players[index - 1].cards[cardIndex]);
-            room.players[index - 1].cards.splice(cardIndex, 1);
+            room.centerCards.push(room.players[index].cards[cardIndex]);
+            room.players[index].cards.splice(cardIndex, 1);
             if (room.players.filter((player) => !player.cards.length).length)
               return this.end(room.roomID);
             this.nextTurn(room, player, data, socket);
@@ -373,6 +383,8 @@ class Server {
           !data.card.color &&
           data.card.ability &&
           player.turn !== "gmatch" &&
+          player.turn !== "plus2" &&
+          player.turn !== "plus4" &&
           data.card.ability === "gmatch"
           /*player.turn === "gmatch" &&*/
         ) {
@@ -382,11 +394,23 @@ class Server {
           if (room.players.length <= index) index = 0;
           console.log("hi im in gmatch play", index);
           room.centerCard = data.card;
-          const lastNumberedCard = room.centerCards.find(
-            (card) => card.number !== null
-          );
+          // const lastNumberedCard = room.centerCards.find(
+          //   (card) => card.number !== null
+          // );
+          var lastNumberedCard;
+          for (let i = room.centerCards.length - 1; i > -1; i--) {
+            if (room.centerCards[i].number !== null) {
+              lastNumberedCard = room.centerCards[i];
+              break;
+            }
+          }
           const groupMatchCards = room.players[index].cards.filter(
             (card) => card.group === lastNumberedCard.group
+          );
+          console.log(
+            "hi im in gmatch play",
+            lastNumberedCard,
+            groupMatchCards
           );
           if (groupMatchCards.length > 0) {
             this.nextTurn(room, player, data, socket, "gmatch");

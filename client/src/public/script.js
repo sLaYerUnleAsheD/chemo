@@ -78,7 +78,7 @@ server.onmessage = function (event) {
       if (!isNaN(card.number) && !card.ability)
         return $(".you .my-cards").append(
           ///////////////////////////////////////////////////////////////////////////////////////////////SYMBOL///////////////////////////////////////////////////////////////////////////////
-          `<div class="my-card num-${card.number} ${card.color}" data-ability data-color="${card.color}" data-number=${card.number} data-symbol="${card.symbol}"><span class="inner"><span class="mark">${card.symbol}</span></span></div>`
+          `<div class="my-card num-${card.number} ${card.color}" data-ability data-color="${card.color}" data-number=${card.number} data-symbol="${card.symbol}" data-group="${card.group}"><span class="inner"><span class="mark">${card.symbol}</span></span></div>`
         );
       if (card.ability === "plus4")
         return $(".you .my-cards").append(
@@ -111,6 +111,7 @@ server.onmessage = function (event) {
         color: card.currentTarget.getAttribute("data-color") || null,
         number: card.currentTarget.getAttribute("data-number") || null,
         symbol: card.currentTarget.getAttribute("data-symbol") || null,
+        group: card.currentTarget.getAttribute("data-group") || null,
       };
       if (
         card.currentTarget.getAttribute("data-ability") === "change" ||
