@@ -78,7 +78,7 @@ server.onmessage = function (event) {
       if (!isNaN(card.number) && !card.ability)
         return $(".you .my-cards").append(
           ///////////////////////////////////////////////////////////////////////////////////////////////SYMBOL///////////////////////////////////////////////////////////////////////////////
-          `<div class="my-card num-${card.number} ${card.color}" data-ability data-color="${card.color}" data-number=${card.number} data-symbol="${card.symbol}" data-group="${card.group}"><span class="inner"><span class="mark">${card.symbol}</span></span></div>`
+          `<div class="my-card num-${card.number} ${card.color}" data-ability data-color="${card.color}" data-number=${card.number} data-symbol="${card.symbol}" data-group="${card.group}" data-period="${card.period}"><span class="inner"><span class="mark">${card.symbol}</span></span></div>`
         );
       if (card.ability === "plus4")
         return $(".you .my-cards").append(
@@ -87,6 +87,10 @@ server.onmessage = function (event) {
       if (card.ability === "gmatch")
         return $(".you .my-cards").append(
           `<div class="my-card num-gmatch black" data-ability="gmatch" data-color data-number><span class="inner"><span class="mark">GrM</span></span></div>`
+        );
+      if (card.ability === "pmatch")
+        return $(".you .my-cards").append(
+          `<div class="my-card num-pmatch black" data-ability="pmatch" data-color data-number><span class="inner"><span class="mark">PrM</span></span></div>`
         );
       if (card.ability === "plus2")
         return $(".you .my-cards").append(
@@ -112,6 +116,7 @@ server.onmessage = function (event) {
         number: card.currentTarget.getAttribute("data-number") || null,
         symbol: card.currentTarget.getAttribute("data-symbol") || null,
         group: card.currentTarget.getAttribute("data-group") || null,
+        period: card.currentTarget.getAttribute("data-period") || null,
       };
       if (
         card.currentTarget.getAttribute("data-ability") === "change" ||
@@ -196,6 +201,10 @@ server.onmessage = function (event) {
       if (data.room.centerCard.ability === "gmatch")
         $(".center .center-card").html(
           `<div class="my-card num-gmatch ${data.room.centerColor}" data-ability="gmatch" data-color data-number><span class="inner"><span class="mark">GrM</span></span></div>`
+        );
+      if (data.room.centerCard.ability === "pmatch")
+        $(".center .center-card").html(
+          `<div class="my-card num-pmatch ${data.room.centerColor}" data-ability="pmatch" data-color data-number><span class="inner"><span class="mark">PrM</span></span></div>`
         );
       if (data.room.centerCard.ability === "plus2")
         $(".center .center-card").html(
@@ -332,6 +341,10 @@ server.onmessage = function (event) {
       $(".center .center-card").html(
         `<div class="my-card num-gmatch ${data.centerColor}" data-ability="gmatch" data-color data-number><span class="inner"><span class="mark">GrM</span></span></div>`
       );
+    if (data.centerCard.ability === "pmatch")
+      $(".center .center-card").html(
+        `<div class="my-card num-pmatch ${data.centerColor}" data-ability="pmatch" data-color data-number><span class="inner"><span class="mark">PrM</span></span></div>`
+      );
     if (data.centerCard.ability === "plus2")
       $(".center .center-card").html(
         `<div class="my-card num-plus2 ${data.centerCard.color}" data-ability="plus2" data-color="${data.centerCard.color}" data-number><span class="inner"><span class="mark">+2</span></span></div>`
@@ -386,6 +399,10 @@ server.onmessage = function (event) {
         if (card.ability === "gmatch")
           return $(`.player.num-${data.players.length}-${j} .my-cards`).append(
             `<div class="my-card num-gmatch black" data-ability="gmatch" data-color data-number><span class="inner"><span class="mark">GrM</span></span></div>`
+          );
+        if (card.ability === "pmatch")
+          return $(`.player.num-${data.players.length}-${j} .my-cards`).append(
+            `<div class="my-card num-pmatch black" data-ability="pmatch" data-color data-number><span class="inner"><span class="mark">PrM</span></span></div>`
           );
         if (card.ability === "plus2")
           return $(`.player.num-${data.players.length}-${j} .my-cards`).append(
