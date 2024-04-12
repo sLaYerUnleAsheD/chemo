@@ -377,38 +377,6 @@ class Server {
               return this.end(room.roomID);
             this.nextTurn(room, player, data, socket);
           }
-        }
-
-        if (
-          !data.card.color &&
-          data.card.ability &&
-          player.turn !== "gmatch" &&
-          player.turn !== "plus2" &&
-          player.turn !== "plus4" &&
-          data.card.ability === "gmatch"
-        ) {
-          // Check if the next player has a card with the same group as the last numbered card
-          var index =
-            room.players.findIndex((player) => player.id === socket.id) + 1;
-          if (room.players.length <= index) index = 0;
-          room.centerCard = data.card;
-
-          var lastNumberedCard;
-          for (let i = room.centerCards.length - 1; i > -1; i--) {
-            if (room.centerCards[i].number !== null) {
-              lastNumberedCard = room.centerCards[i];
-              break;
-            }
-          }
-          const groupMatchCards = room.players[index].cards.filter(
-            (card) => card.group === lastNumberedCard.group
-          );
-          if (groupMatchCards.length > 0) {
-            this.nextTurn(room, player, data, socket, "gmatch");
-          } else {
-            room.centerPlus = room.centerPlus + 3;
-            this.nextTurn(room, player, data, socket, "gmatch");
-          }
         } else if (player.turn === "pmatch") {
           var lastNumberedCard;
           for (let i = room.centerCards.length - 1; i > -1; i--) {
@@ -448,6 +416,36 @@ class Server {
         }
 
         if (
+          !data.card.color &&
+          data.card.ability &&
+          player.turn !== "gmatch" &&
+          player.turn !== "plus2" &&
+          player.turn !== "plus4" &&
+          data.card.ability === "gmatch"
+        ) {
+          // Check if the next player has a card with the same group as the last numbered card
+          var index =
+            room.players.findIndex((player) => player.id === socket.id) + 1;
+          if (room.players.length <= index) index = 0;
+          room.centerCard = data.card;
+
+          var lastNumberedCard;
+          for (let i = room.centerCards.length - 1; i > -1; i--) {
+            if (room.centerCards[i].number !== null) {
+              lastNumberedCard = room.centerCards[i];
+              break;
+            }
+          }
+          const groupMatchCards = room.players[index].cards.filter(
+            (card) => card.group === lastNumberedCard.group
+          );
+          if (groupMatchCards.length > 0) {
+            this.nextTurn(room, player, data, socket, "gmatch");
+          } else {
+            room.centerPlus = room.centerPlus + 3;
+            this.nextTurn(room, player, data, socket, "gmatch");
+          }
+        } else if (
           !data.card.color &&
           data.card.ability &&
           player.turn !== "pmatch" &&
