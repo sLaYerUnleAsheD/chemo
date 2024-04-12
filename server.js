@@ -333,7 +333,6 @@ class Server {
         : parseInt(data.card.number);
     switch (data.action) {
       case "place": {
-        console.log();
         if (
           !data.card ||
           !player.cards.filter(
@@ -345,10 +344,43 @@ class Server {
         )
           return; // check if player has card
 
-        if (data.card.ability === "gmatch") {
+        if (player.turn === "gmatch") {
+          console.log("hi im here to see if turn is gmatch");
+          const lastNumberedCard = room.centerCards.find(
+            (card) => card.number !== null
+          );
+          var index =
+            room.players.findIndex((player) => player.id === socket.id) + 1;
+          if (room.players.length <= index) index = 0;
+          if (
+            !player.cards.filter(
+              (card) => card.group === lastNumberedCard.group
+            ).length ||
+            data.card.group !== lastNumberedCard.group
+          ) {
+            return;
+          } else if (data.card && data.card.group === lastNumberedCard.group) {
+            room.centerCard = data.card;
+            room.centerCards.push(room.players[index - 1].cards[cardIndex]);
+            room.players[index - 1].cards.splice(cardIndex, 1);
+            if (room.players.filter((player) => !player.cards.length).length)
+              return this.end(room.roomID);
+            this.nextTurn(room, player, data, socket);
+          }
+        }
+
+        if (
+          !data.card.color &&
+          data.card.ability &&
+          player.turn !== "gmatch" &&
+          data.card.ability === "gmatch"
+          /*player.turn === "gmatch" &&*/
+        ) {
           // Check if the next player has a card with the same group as the last numbered card
           var index =
             room.players.findIndex((player) => player.id === socket.id) + 1;
+          if (room.players.length <= index) index = 0;
+          console.log("hi im in gmatch play", index);
           room.centerCard = data.card;
           const lastNumberedCard = room.centerCards.find(
             (card) => card.number !== null
@@ -361,11 +393,11 @@ class Server {
           } else {
             // No card from the same group, pick 3 cards
             room.centerPlus = room.centerPlus + 3;
-            this.nextTurn(room, player, data, socket, "take");
+            // this.giveCards(room, socket, room.centerPlus);
+            // room.centerPlus = 0;
+            this.nextTurn(room, player, data, socket, "gmatch");
           }
-        }
-
-        if (
+        } else if (
           (!data.card.color &&
             data.card.ability &&
             player.turn !== "plus4" &&
@@ -399,6 +431,7 @@ class Server {
         if (
           (data.card.color &&
             player.turn !== "plus4" &&
+            /*  player.turn !== "gmatch" && */
             player.turn !== "plus2") ||
           (player.turn === "plus2" && data.card.ability === "plus2") ||
           (data.card.ability === "plus2" &&
@@ -430,6 +463,25 @@ class Server {
                 this.nextTurn(room, player, data, socket, "block"); // skip
                 break;
               }
+              // case "gmatch": {
+              //   var index =
+              //     room.players.findIndex((player) => player.id === socket.id) +
+              //     1;
+              //   room.centerCard = data.card;
+              //   const lastNumberedCard = room.centerCards.find(
+              //     (card) => card.number !== null
+              //   );
+              //   const groupMatchCards = room.players[index].cards.filter(
+              //     (card) => card.group === lastNumberedCard.group
+              //   );
+              //   if (groupMatchCards.length > 0) {
+              //     this.nextTurn(room, player, data, socket, "gmatch");
+              //   } else {
+              //     // No card from the same group, pick 3 cards
+              //     room.centerPlus = room.centerPlus + 3;
+              //     this.nextTurn(room, player, data, socket, "take");
+              //   }
+              // }
               default: {
                 // room.lastNumCard = data.card; //update last num card when its not ability card.
                 this.nextTurn(room, player, data, socket);
@@ -504,6 +556,21 @@ class Server {
         if (room.players.filter((player) => !player.cards.length).length)
           return this.end(room.roomID);
       }
+
+      // if (turn === "gmatch") {
+      //   const lastNumberedCard = room.centerCards.find(
+      //     (card) => card.number !== null
+      //   );
+
+      //   const cardIndex = player.cards.findIndex(
+      //     (card) => card.group === lastNumberedCard.group
+      //   );
+      //   room.centerCards.push(room.players[index - 1].cards[cardIndex]);
+      //   room.players[index - 1].cards.splice(cardIndex, 1);
+      //   if (room.players.filter((player) => !player.cards.length).length)
+      //     return this.end(room.roomID);
+      // }
+
       if (0 > index) index = room.players.length - 1;
       if (turn === "block" || (turn === "reverse" && room.players.length === 2))
         index--;
@@ -516,7 +583,7 @@ class Server {
     } else {
       var index =
         room.players.findIndex((player) => player.id === socket.id) + 1;
-      if (turn !== "take" && turn !== "gmatch") {
+      if (turn !== "take") {
         const cardIndex = player.cards.findIndex(
           (card) =>
             card.color === data.card.color &&
@@ -529,15 +596,22 @@ class Server {
           return this.end(room.roomID);
       }
 
-      if (turn === "gmatch") {
-        const cardIndex = player.cards.findIndex(
-          (card) => card.group === data.card.group
-        );
-        room.centerCards.push(room.players[index - 1].cards[cardIndex]);
-        room.players[index - 1].cards.splice(cardIndex, 1);
-        if (room.players.filter((player) => !player.cards.length).length)
-          return this.end(room.roomID);
-      }
+      // if (turn === "gmatch") {
+      //   const lastNumberedCard = room.centerCards.find(
+      //     (card) => card.number !== null
+      //   );
+
+      //   const cardIndex = player.cards.findIndex(
+      //     (card) =>
+      //       card.color === data.card.color &&
+      //       card.ability === data.card.ability &&
+      //       card.group === lastNumberedCard.group
+      //   );
+      //   room.centerCards.push(room.players[index - 1].cards[cardIndex]);
+      //   room.players[index - 1].cards.splice(cardIndex, 1);
+      //   if (room.players.filter((player) => !player.cards.length).length)
+      //     return this.end(room.roomID);
+      // }
 
       if (room.players.length <= index) index = 0;
       if (turn === "block" || (turn === "reverse" && room.players.length === 2))
@@ -779,7 +853,7 @@ class Server {
         symbol: null,
         number: null,
         color: null,
-        ability: "plus4",
+        ability: "gmatch",
       });
       cards.push({
         group: null,
@@ -787,7 +861,7 @@ class Server {
         symbol: null,
         number: null,
         color: null,
-        ability: "change",
+        ability: "gmatch",
       });
       cards.push({
         group: null,

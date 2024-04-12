@@ -327,9 +327,9 @@ server.onmessage = function (event) {
       $(".center .center-card").html(
         `<div class="my-card num-plus4 ${data.centerColor}" data-ability="plus4" data-color data-number><span class="inner"><span class="mark">+4</span></span></div>`
       );
-    if (data.room.centerCard.ability === "gmatch")
+    if (data.centerCard.ability === "gmatch")
       $(".center .center-card").html(
-        `<div class="my-card num-gmatch ${data.room.centerColor}" data-ability="gmatch" data-color data-number><span class="inner"><span class="mark">GrM</span></span></div>`
+        `<div class="my-card num-gmatch ${data.centerColor}" data-ability="gmatch" data-color data-number><span class="inner"><span class="mark">GrM</span></span></div>`
       );
     if (data.centerCard.ability === "plus2")
       $(".center .center-card").html(
