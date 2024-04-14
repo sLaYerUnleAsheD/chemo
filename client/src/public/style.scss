@@ -5,10 +5,10 @@
 }
 
 :root {
-    --card-blue: #0063B3;
-    --card-green: #18A849;
-    --card-red: #C72A18;
-    --card-yellow: #E6CA1E;
+    --card-blue: #8ACDD7;
+    --card-green: #79AC78;
+    --card-red: #FF8080;
+    --card-yellow: #EEC759;
 }
 
 html {
@@ -264,7 +264,7 @@ button {
     position: absolute;
     right: 0;
     margin: 1rem;
-    color: #626261;
+    color: #FEFDED;
     text-align: center;
     cursor: pointer;
     font-size: 200%;
@@ -273,7 +273,7 @@ button {
 }
 
 .cancel:hover {
-    color: #404040;
+    color: #FFF7FC;
 }
 
 .room-settings {
@@ -296,7 +296,7 @@ button {
 }
 
 #room-code {
-    color: #f00fff;
+    color: #FFF455;
     user-select: text;
 }
 
@@ -540,9 +540,9 @@ button {
     right: 2%;
     text-align: right;
     font-size: 400%;
-    color: #000;
-    -webkit-text-fill-color: #ffe000;
-    -webkit-text-stroke: 3px;
+    // color: #000;
+    -webkit-text-fill-color: #F8EDE3;
+    // -webkit-text-stroke: 3px;
     animation: cards-in 1s ease-in forwards;
     display: none;
     user-select: none;
@@ -879,16 +879,16 @@ button {
     margin: 0 -20px;
     font-family: 'Source Sans Pro', sans-serif;
     font-size: 80px;
-    text-shadow:
-        1px 1px 0 #000000,
-        -1px -1px 0 #000000,
-        -1px 1px 0 #000000,
-        1px -1px 0 #000000,
-        1px 0 0 #000000,
-        -1px 0 0 #000000,
-        0 -1px 0 #000000,
-        0 1px 0 #000000,
-        4px 4px 0 #000000;
+    // text-shadow:
+    //     1px 1px 0 #000000,
+    //     -1px -1px 0 #000000,
+    //     -1px 1px 0 #000000,
+    //     1px -1px 0 #000000,
+    //     1px 0 0 #000000,
+    //     -1px 0 0 #000000,
+    //     0 -1px 0 #000000,
+    //     0 1px 0 #000000,
+    //     4px 4px 0 #000000;
     box-shadow: 0 0 10px #aaaaaa;
     text-align: center;
     position: relative;
@@ -920,13 +920,13 @@ button {
 
 .my-card .mark.default {
     padding: 38px 0;
-    background: #c62437;
+    background: #FFE6E6;
 }
 
 .my-card .mark.default .uno-default {
     transform: rotate(336deg);
     font-size: 50%;
-    color: #ebce2c;
+    color: #7469B6;
 }
 
 .num-plus4 .inner .mark,
@@ -935,8 +935,8 @@ button {
 }
 
 .num-block .inner .mark {
-    font-size: 70%;
-    padding: 20px 4.75px;
+    font-size: 95%;
+    padding: 20px 12.75px;
 }
 
 .num-reverse .inner .mark {
@@ -970,16 +970,16 @@ button {
     line-height: 0;
     font-size: 20px;
     color: #ffffff;
-    text-shadow:
-        1px 1px 0 #000000,
-        -1px -1px 0 #000000,
-        -1px 1px 0 #000000,
-        1px -1px 0 #000000,
-        1px 0 0 #000000,
-        -1px 0 0 #000000,
-        0 -1px 0 #000000,
-        0 1px 0 #000000,
-        2px 2px 0 #000000;
+    // text-shadow:
+    //     1px 1px 0 #000000,
+    //     -1px -1px 0 #000000,
+    //     -1px 1px 0 #000000,
+    //     1px -1px 0 #000000,
+    //     1px 0 0 #000000,
+    //     -1px 0 0 #000000,
+    //     0 -1px 0 #000000,
+    //     0 1px 0 #000000,
+    //     2px 2px 0 #000000;
 }
 
 .my-card:before {
@@ -1030,7 +1030,7 @@ button {
 }
 
 .my-card.black {
-    color: #000;
+    color: #db6de7;
 }
 
 .my-card.black .inner {
@@ -1114,7 +1114,7 @@ button {
 
 .my-card.num-block:before,
 .my-card.num-block:after {
-    content: "🚫";
+    content: "🛇";
 }
 
 // .my-card.num-6 .mark:after,

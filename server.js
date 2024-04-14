@@ -345,6 +345,7 @@ class Server {
           return; // check if player has card
 
         if (player.turn === "gmatch") {
+          // console.log("turn is gmatchchch");
           var lastNumberedCard;
           for (let i = room.centerCards.length - 1; i > -1; i--) {
             if (room.centerCards[i].number !== null) {
@@ -352,9 +353,10 @@ class Server {
               break;
             }
           }
-          var index =
-            room.players.findIndex((player) => player.id === socket.id) + 1;
-          if (room.players.length <= index) index = 0;
+          var index = room.players.findIndex(
+            (player) => player.id === socket.id
+          );
+          // if (room.players.length <= index) index = 0;
           if (
             !player.cards.filter(
               (card) => card.group === lastNumberedCard.group
@@ -368,16 +370,20 @@ class Server {
                 card.color === data.card.color &&
                 card.ability === data.card.ability &&
                 card.number === data.card.number &&
-                card.group === data.card.group
+                card.group === data.card.group &&
+                card.period === data.card.period
             );
             room.centerCard = data.card;
             room.centerCards.push(room.players[index].cards[cardIndex]);
             room.players[index].cards.splice(cardIndex, 1);
             if (room.players.filter((player) => !player.cards.length).length)
               return this.end(room.roomID);
+            // console.log("about to make move");
             this.nextTurn(room, player, data, socket);
+            // console.log("made movie");
           }
         } else if (player.turn === "pmatch") {
+          // console.log("in pamtchchc turn");
           var lastNumberedCard;
           for (let i = room.centerCards.length - 1; i > -1; i--) {
             if (room.centerCards[i].number !== null) {
@@ -385,9 +391,10 @@ class Server {
               break;
             }
           }
-          var index =
-            room.players.findIndex((player) => player.id === socket.id) + 1;
-          if (room.players.length <= index) index = 0;
+          var index = room.players.findIndex(
+            (player) => player.id === socket.id
+          );
+          // if (room.players.length <= index) index = 0;
           if (
             !player.cards.filter(
               (card) => card.period === lastNumberedCard.period
@@ -404,6 +411,7 @@ class Server {
                 card.color === data.card.color &&
                 card.ability === data.card.ability &&
                 card.number === data.card.number &&
+                card.group === data.card.group &&
                 card.period === data.card.period
             );
             room.centerCard = data.card;
@@ -411,22 +419,31 @@ class Server {
             room.players[index].cards.splice(cardIndex, 1);
             if (room.players.filter((player) => !player.cards.length).length)
               return this.end(room.roomID);
+            // console.log("about to make move");
             this.nextTurn(room, player, data, socket);
+            // console.log("made movie");
           }
-        }
-
-        if (
+        } else if (
           !data.card.color &&
           data.card.ability &&
           player.turn !== "gmatch" &&
           player.turn !== "plus2" &&
           player.turn !== "plus4" &&
+          player.turn !== "pmatch" &&
           data.card.ability === "gmatch"
         ) {
           // Check if the next player has a card with the same group as the last numbered card
-          var index =
-            room.players.findIndex((player) => player.id === socket.id) + 1;
-          if (room.players.length <= index) index = 0;
+          // console.log("placing gmatch card bois");
+          if (room.reversed) {
+            var index =
+              room.players.findIndex((player) => player.id === socket.id) - 1;
+            if (0 > index) index = room.players.length - 1;
+          } else {
+            var index =
+              room.players.findIndex((player) => player.id === socket.id) + 1;
+            if (room.players.length <= index) index = 0;
+          }
+
           room.centerCard = data.card;
 
           var lastNumberedCard;
@@ -451,12 +468,20 @@ class Server {
           player.turn !== "pmatch" &&
           player.turn !== "plus2" &&
           player.turn !== "plus4" &&
+          player.turn !== "gmatch" &&
           data.card.ability === "pmatch"
         ) {
           // Check if the next player has a card with the same group as the last numbered card
-          var index =
-            room.players.findIndex((player) => player.id === socket.id) + 1;
-          if (room.players.length <= index) index = 0;
+          // console.log("placing pmatch card bois");
+          if (room.reversed) {
+            var index =
+              room.players.findIndex((player) => player.id === socket.id) - 1;
+            if (0 > index) index = room.players.length - 1;
+          } else {
+            var index =
+              room.players.findIndex((player) => player.id === socket.id) + 1;
+            if (room.players.length <= index) index = 0;
+          }
           room.centerCard = data.card;
 
           var lastNumberedCard;
@@ -479,11 +504,14 @@ class Server {
           (!data.card.color &&
             data.card.ability &&
             player.turn !== "plus4" &&
+            player.turn !== "gmatch" &&
+            player.turn !== "pmatch" &&
             player.turn !== "plus2") ||
           (player.turn === "plus4" && data.card.ability === "plus4") ||
           (player.turn === "plus2" && data.card.ability === "plus4")
         ) {
           // change colour when ability
+          // console.log("visiting plus4 domain");
           if (
             data.card.pickedColor === "red" ||
             data.card.pickedColor === "green" ||
@@ -509,7 +537,9 @@ class Server {
         if (
           (data.card.color &&
             player.turn !== "plus4" &&
-            /*  player.turn !== "gmatch" && */
+            player.turn !== "gmatch" &&
+            player.turn !== "pmatch" &&
+            player.turn !== false &&
             player.turn !== "plus2") ||
           (player.turn === "plus2" && data.card.ability === "plus2") ||
           (data.card.ability === "plus2" &&
@@ -525,6 +555,7 @@ class Server {
           ) {
             room.centerCard = data.card;
             room.centerColor = data.card.color;
+            // console.log("in normal placing: ", player.turn);
             switch (data.card.ability) {
               case "reverse": {
                 //room.players.reverse();
@@ -600,14 +631,21 @@ class Server {
     }
   }
   nextTurn(room, player, data, socket, turn = true) {
+    // console.log("in next turn bois");
     if (room.reversed) {
       var index =
         room.players.findIndex((player) => player.id === socket.id) - 1;
-      if (turn !== "take") {
+      if (
+        turn !== "take" &&
+        player.turn !== "gmatch" &&
+        player.turn !== "pmatch"
+      ) {
         const cardIndex = player.cards.findIndex(
           (card) =>
             card.color === data.card.color &&
             card.ability === data.card.ability &&
+            card.group === data.card.group &&
+            card.period === data.card.period &&
             card.number === data.card.number
         );
         room.centerCards.push(room.players[index + 1].cards[cardIndex]);
@@ -628,11 +666,18 @@ class Server {
     } else {
       var index =
         room.players.findIndex((player) => player.id === socket.id) + 1;
-      if (turn !== "take") {
+      if (
+        turn !== "take" &&
+        player.turn !== "gmatch" &&
+        player.turn !== "pmatch"
+      ) {
+        // console.log("card cut huaa", data.card.symbol);
         const cardIndex = player.cards.findIndex(
           (card) =>
             card.color === data.card.color &&
             card.ability === data.card.ability &&
+            card.group === data.card.group &&
+            card.period === data.card.period &&
             card.number === data.card.number
         );
         room.centerCards.push(room.players[index - 1].cards[cardIndex]);

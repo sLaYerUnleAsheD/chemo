@@ -35,9 +35,7 @@ server.onmessage = function (event) {
   if (data.type === "id") user.id = data.id;
   if (data.type === "v") {
     console.log("Game Version: %c" + data.version, "color: yellow");
-    $(".menu-footer").append(
-      `<p>Version: <a target="_blank" href="https://github.com/mrozio13pl/uno/releases/latest">${data.version}</a></p>`
-    );
+    $(".menu-footer").append(`<p>Version: ${data.version}</p>`);
   }
   if (data.type === "room_list") {
     $(".refresh").attr("disabled", true);
@@ -102,7 +100,7 @@ server.onmessage = function (event) {
         );
       if (card.ability === "block")
         return $(".you .my-cards").append(
-          `<div class="my-card num-block ${card.color}" data-ability="block" data-color="${card.color}" data-number><span class="inner"><span class="mark">🚫</span></span></div>`
+          `<div class="my-card num-block ${card.color}" data-ability="block" data-color="${card.color}" data-number><span class="inner"><span class="mark">🛇</span></span></div>`
         );
       if (card.ability === "change")
         return $(".you .my-cards").append(
@@ -216,7 +214,7 @@ server.onmessage = function (event) {
         );
       if (data.room.centerCard.ability === "block")
         $(".center .center-card").html(
-          `<div class="my-card num-block ${data.room.centerCard.color}" data-ability="block" data-color="${data.room.centerCard.color}" data-number><span class="inner"><span class="mark">🚫</span></span></div>`
+          `<div class="my-card num-block ${data.room.centerCard.color}" data-ability="block" data-color="${data.room.centerCard.color}" data-number><span class="inner"><span class="mark">🛇</span></div>`
         );
       if (data.room.centerCard.ability === "change")
         $(".center .center-card").html(
@@ -355,7 +353,7 @@ server.onmessage = function (event) {
       );
     if (data.centerCard.ability === "block")
       $(".center .center-card").html(
-        `<div class="my-card num-block ${data.centerCard.color}" data-ability="block" data-color="${data.centerCard.color}" data-number><span class="inner"><span class="mark">🚫</span></span></div>`
+        `<div class="my-card num-block ${data.centerCard.color}" data-ability="block" data-color="${data.centerCard.color}" data-number>🛇</span></span></div>`
       );
     if (data.centerCard.ability === "change")
       $(".center .center-card").html(
@@ -414,7 +412,7 @@ server.onmessage = function (event) {
           );
         if (card.ability === "block")
           return $(`.player.num-${data.players.length}-${j} .my-cards`).append(
-            `<div class="my-card num-block ${card.color}" data-ability="block" data-color="${card.color}" data-number><span class="inner"><span class="mark">🚫</span></span></div>`
+            `<div class="my-card num-block ${card.color}" data-ability="block" data-color="${card.color}" data-number><span class="inner"><span class="mark">🛇</span></span></div>`
           );
         if (card.ability === "change")
           return $(`.player.num-${data.players.length}-${j} .my-cards`).append(
